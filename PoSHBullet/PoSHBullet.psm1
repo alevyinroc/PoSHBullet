@@ -38,6 +38,16 @@ function Get-User
     }
 }
 
+<#
+.Synopsis
+   Retrieves all registered devices.
+.DESCRIPTION
+   Retrieves the full details of all devices registered to the give PushBullet API key. Results are a JSON object.
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Get-Device
 {
     [CmdletBinding()]
@@ -48,18 +58,25 @@ function Get-Device
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $APIKey
+        [string]$APIKey,
+        [Parameter(Mandatory=$false,Position=1)]
+        [switch]$ActiveOnly
     )
 
     Begin
     {
         $DevicesUrl = "https://api.pushbullet.com/v2/devices";
+        $DevicesMethod = "GET";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
     }
     Process
     {
-        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
-        $Devices = Invoke-RestMethod -Uri $DevicesUrl -Credential $AccessCredential -Method "GET";
-        $Devices.devices;
+        $Devices = Invoke-RestMethod -Uri $DevicesUrl -Credential $AccessCredential -Method $DevicesMethod;
+        if ($ActiveOnly) {
+            $Devices.devices| Where-Object {$_.active -eq "true"};
+        } else {
+            $Devices.devices;
+        }
     }
     End
     {
@@ -69,18 +86,17 @@ function Get-Device
 function Remove-Device
 {
     [CmdletBinding()]
-    [OutputType([int])]
+    [OutputType([bool])]
     Param
     (
         # Param1 help description
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
-
-        # Param2 help description
-        [int]
-        $Param2
+        [string]$APIKey,
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [string]$DeviceId
     )
 
     Begin
@@ -97,25 +113,33 @@ function Remove-Device
 function Get-Contact
 {
     [CmdletBinding()]
-    [OutputType([int])]
+    [OutputType([System.String])]
     Param
     (
         # Param1 help description
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
-
-        # Param2 help description
-        [int]
-        $Param2
+        [string]$APIKey,
+        [Parameter(Mandatory=$false,Position=1)]
+        [switch]$ActiveOnly
     )
 
     Begin
     {
+        $ContactsURL = "https://api.pushbullet.com/v2/contacts";
+        $ContactsMethod = "GET";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
+
     }
     Process
     {
+        $Contacts = Invoke-RestMethod -Uri $ContactsURL -Credential $AccessCredential -Method $ContactsMethod;
+        if ($ActiveOnly) {
+            $Contacts.contacts| Where-Object {$_.active -eq "true"};
+        } else {
+            $Contacts.contacts;
+        }
     }
     End
     {
@@ -263,3 +287,4 @@ function Remove-Push
 }
 
 Export-ModuleMember -Function Get-Device;
+Export-ModuleMember -Function Get-Contact;
