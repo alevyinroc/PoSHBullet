@@ -13,25 +13,24 @@
 function Get-User
 {
     [CmdletBinding()]
-    [OutputType([int])]
+    [OutputType([System.String])]
     Param
     (
         # Param1 help description
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
-
-        # Param2 help description
-        [int]
-        $Param2
+        [string]$APIKey
     )
 
     Begin
     {
+        $UserUrl = "https://api.pushbullet.com/v2/users/me";
+        $UserMethod = "GET";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
     }
     Process
     {
+        Invoke-RestMethod -Uri $UserUrl -Credential $AccessCredential -Method $UserMethod;
     }
     End
     {
@@ -101,9 +100,19 @@ function Remove-Device
 
     Begin
     {
+        $DevicesURL = "https://api.pushbullet.com/v2/contacts";
+        $DevicesMethod = "DELETE";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
+
     }
     Process
     {
+        $DevicesURLForDelete = "$DevicesURL/$DeviceId";
+# TODO: Implement WhatIf
+# TODO: Check that the device ID is valid
+# TODO: Error handling
+# TODO: Return status indicator (success or fail)
+        Invoke-RestMethod -Uri $DevicesURLForDelete -Credential $AccessCredential -Method $DevicesMethod;
     }
     End
     {
@@ -118,7 +127,6 @@ function Get-Contact
     (
         # Param1 help description
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [string]$APIKey,
         [Parameter(Mandatory=$false,Position=1)]
@@ -148,26 +156,34 @@ function Get-Contact
 
 function Remove-Contact
 {
-    [CmdletBinding()]
-    [OutputType([int])]
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([System.String])]
     Param
     (
         # Param1 help description
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
-
-        # Param2 help description
-        [int]
-        $Param2
+        [string]$APIKey,
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true,Position=1)]
+        [string]$ContactId
     )
 
     Begin
     {
+        $ContactsURL = "https://api.pushbullet.com/v2/contacts";
+        $ContactsMethod = "DELETE";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
+
     }
     Process
     {
+        $ContactsURLForDelete = "$ContactsURL/$ContactId";
+# TODO: Implement WhatIf
+# TODO: Check that the contact ID is valid
+# TODO: Error handling
+# TODO: Return status indicator (success or fail)
+        $Contacts = Invoke-RestMethod -Uri $ContactsURLForDelete -Credential $AccessCredential -Method $ContactsMethod;
+        $Contacts;
     }
     End
     {
@@ -288,3 +304,6 @@ function Remove-Push
 
 Export-ModuleMember -Function Get-Device;
 Export-ModuleMember -Function Get-Contact;
+Export-ModuleMember -Function Remove-Contact;
+Export-ModuleMember -Function Remove-Device;
+Export-ModuleMember -Function Get-User;
