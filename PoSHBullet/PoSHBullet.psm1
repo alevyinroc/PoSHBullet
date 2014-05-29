@@ -264,7 +264,7 @@ function Send-Text
         [Parameter(Mandatory=$true,
                    Position=2)]
         [string]
-        $Body,
+        $MessageBody,
         [Parameter(Mandatory=$true,
                    Position=3)]
         [string]
@@ -273,14 +273,14 @@ function Send-Text
 
     Begin
     {
-        $PushURL = "https://api.pushbullet.com/v2/contacts";
+        $PushURL = "https://api.pushbullet.com/v2/pushes";
         $PushMethod = "POST";
         $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
     }
     Process
     {
-    	$Body = "device_iden=`"$DeviceId`"&type=`"note`"&title=`"$Title`"&body=`"$Body`";
-    	Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body;
+        $Body = @{device_iden=$DeviceId;type='note';title=$Title;body=$MessageBody;}
+    	Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body -Credential $AccessCredential;
     }
     End
     {
@@ -315,9 +315,4 @@ function Remove-Push
     }
 }
 
-Export-ModuleMember -Function Get-Device;
-Export-ModuleMember -Function Get-Contact;
-Export-ModuleMember -Function Remove-Contact;
-Export-ModuleMember -Function Remove-Device;
-Export-ModuleMember -Function Get-User;
-Export-ModuleMember -Function Send-Text;
+Export-ModuleMember -Function @('Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text');
