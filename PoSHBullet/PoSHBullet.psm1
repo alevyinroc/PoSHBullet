@@ -173,7 +173,6 @@ function Remove-Contact
         $ContactsURL = "https://api.pushbullet.com/v2/contacts";
         $ContactsMethod = "DELETE";
         $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
-
     }
     Process
     {
@@ -246,7 +245,7 @@ function Get-PushHistory
     }
 }
 
-function Send-Push
+function Send-Text
 {
     [CmdletBinding()]
     [OutputType([int])]
@@ -254,20 +253,34 @@ function Send-Push
     (
         # Param1 help description
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
+        $APIKey,
 
         # Param2 help description
-        [int]
-        $Param2
+        [Parameter(Mandatory=$true,
+                   Position=1)]
+        [string]
+        $Title,
+        [Parameter(Mandatory=$true,
+                   Position=2)]
+        [string]
+        $Body,
+        [Parameter(Mandatory=$true,
+                   Position=3)]
+        [string]
+        $DeviceId
     )
 
     Begin
     {
+        $PushURL = "https://api.pushbullet.com/v2/contacts";
+        $PushMethod = "POST";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
     }
     Process
     {
+    	$Body = "device_iden=`"$DeviceId`"&type=`"note`"&title=`"$Title`"&body=`"$Body`";
+    	Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body;
     }
     End
     {
@@ -307,3 +320,4 @@ Export-ModuleMember -Function Get-Contact;
 Export-ModuleMember -Function Remove-Contact;
 Export-ModuleMember -Function Remove-Device;
 Export-ModuleMember -Function Get-User;
+Export-ModuleMember -Function Send-Text;
