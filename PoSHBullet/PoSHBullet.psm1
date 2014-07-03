@@ -255,20 +255,20 @@ function Send-Text
         [Parameter(Mandatory=$true,
                    Position=0)]
         $APIKey,
-
-        # Param2 help description
         [Parameter(Mandatory=$true,
                    Position=1)]
         [string]
-        $Title,
+        $DeviceId,
+
+        # Param2 help description
         [Parameter(Mandatory=$true,
                    Position=2)]
         [string]
-        $MessageBody,
+        $Title,
         [Parameter(Mandatory=$true,
                    Position=3)]
         [string]
-        $DeviceId
+        $MessageBody
     )
 
     Begin
@@ -297,23 +297,23 @@ function Send-Link
         [Parameter(Mandatory=$true,
                    Position=0)]
         $APIKey,
-
-        # Param2 help description
         [Parameter(Mandatory=$true,
                    Position=1)]
         [string]
+        $DeviceId,
+
+        # Param2 help description
+        [Parameter(Mandatory=$true,
+                   Position=2)]
+        [string]
         $Title,
         [string]
-        [Parameter(Mandatory=$true,position=2)]
+        [Parameter(Mandatory=$true,position=3)]
         $Uri,
         [Parameter(Mandatory=$true,
-                   Position=3)]
-        [string]
-        $MessageBody,
-        [Parameter(Mandatory=$false,
                    Position=4)]
         [string]
-        $DeviceId
+        $MessageBody
     )
 
     Begin
@@ -379,20 +379,20 @@ function Send-Address
         [Parameter(Mandatory=$true,
                    Position=0)]
         $APIKey,
-
-        # Param2 help description
         [Parameter(Mandatory=$true,
                    Position=1)]
         [string]
-        $PlaceName,
+        $DeviceId,
+
+        # Param2 help description
         [Parameter(Mandatory=$true,
                    Position=2)]
         [string]
-        $PlaceAddress,
+        $PlaceName,
         [Parameter(Mandatory=$true,
                    Position=3)]
         [string]
-        $DeviceId
+        $PlaceAddress
     )
 
     Begin
