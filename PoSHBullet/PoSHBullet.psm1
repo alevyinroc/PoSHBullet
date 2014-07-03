@@ -336,7 +336,6 @@ function Send-Link
 
     	$Response = Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body -Credential $AccessCredential;
     }
-    }
     End
     {
     }
@@ -370,4 +369,46 @@ function Remove-Push
     }
 }
 
-Export-ModuleMember -Function @('Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link');
+function Send-Address
+{
+    [CmdletBinding()]
+    [OutputType([int])]
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true,
+                   Position=0)]
+        $APIKey,
+
+        # Param2 help description
+        [Parameter(Mandatory=$true,
+                   Position=1)]
+        [string]
+        $PlaceName,
+        [Parameter(Mandatory=$true,
+                   Position=2)]
+        [string]
+        $PlaceAddress,
+        [Parameter(Mandatory=$true,
+                   Position=3)]
+        [string]
+        $DeviceId
+    )
+
+    Begin
+    {
+        $PushURL = "https://api.pushbullet.com/v2/pushes";
+        $PushMethod = "POST";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
+    }
+    Process
+    {
+        $Body = @{device_iden=$DeviceId;type='address';name=$PlaceName;address=$PlaceAddress;}
+    	$Response = Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body -Credential $AccessCredential;
+    }
+    End
+    {
+    }
+}
+
+Export-ModuleMember -Function @('Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address');
