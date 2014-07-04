@@ -59,7 +59,7 @@ function Get-Device
                    Position=0)]
         [string]$APIKey,
         [Parameter(Mandatory=$false,Position=1)]
-        [switch]$ActiveOnly
+        [switch]$ActiveOnly=$true
     )
 
     Begin
@@ -223,22 +223,25 @@ function Get-PushHistory
     [OutputType([int])]
     Param
     (
-        # Param1 help description
+         # Param1 help description
         [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
-
-        # Param2 help description
-        [int]
-        $Param2
+        [string]$APIKey,
+        [Parameter(Mandatory=$false,Position=1)]
+        [DateTime]$OldestPush
     )
 
     Begin
     {
+        $PushURL = "https://api.pushbullet.com/v2/pushes?modified_after=DATE";
+        $PushMethod = "GET";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
     }
     Process
     {
+        $OldestPushForURL = Get-UnixTime -DateToConvert $OldestPush;
+        $Response = Invoke-RestMethod -Uri $($PushURL.Replace("DATE",$OldestPushForURL)) -Method $PushMethod -Body $Body -Credential $AccessCredential;
+        $Response;
     }
     End
     {
@@ -405,10 +408,22 @@ function Send-Address
     {
         $Body = @{device_iden=$DeviceId;type='address';name=$PlaceName;address=$PlaceAddress;}
     	$Response = Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body -Credential $AccessCredential;
+        $Response;
     }
     End
     {
     }
 }
 
-Export-ModuleMember -Function @('Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address');
+function Get-UnixTime {
+    [CmdletBinding()]
+    [OutputType([long])]
+param (
+    [Parameter(Mandatory=$true,Position=0)]
+    [DateTime]$DateToConvert
+)
+    $UnixEpoch = get-date "1970-01-01 00:00:00Z";
+    [long][decimal]::Round(($DateToConvert.ToUniversalTime() - $UnixEpoch).TotalSeconds);
+}
+
+Export-ModuleMember -Function @('Get-PushHistory','Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address');
