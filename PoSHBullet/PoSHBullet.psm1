@@ -351,21 +351,26 @@ function Remove-Push
     Param
     (
         # Param1 help description
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        $Param1,
+        [Parameter(Mandatory=$True,ValueFromPipeline=$True,ValueFromPipelinebyPropertyName=$True)]
+      [Object[]]$Push,
 
         # Param2 help description
-        [int]
-        $Param2
+        [Parameter(Mandatory=$true)]
+        [string]$APIKey
     )
 
     Begin
     {
+         $PushURL = "https://api.pushbullet.com/v2/pushes/";
+        $PushMethod = "DELETE";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
     }
     Process
     {
+        if ($Push.Active) {
+            $PushDirectUrl = $PushURL + $Push.Iden;
+            $Response = Invoke-RestMethod -Uri $PushDirectUrl -Method $PushMethod -Credential $AccessCredential;
+        }
     }
     End
     {
@@ -426,4 +431,4 @@ param (
     [long][decimal]::Round(($DateToConvert.ToUniversalTime() - $UnixEpoch).TotalSeconds);
 }
 
-Export-ModuleMember -Function @('Get-PushHistory','Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address');
+Export-ModuleMember -Function @('Get-PushHistory','Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address','Remove-Push');
