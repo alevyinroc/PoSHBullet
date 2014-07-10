@@ -282,7 +282,10 @@ function Send-Text
     }
     Process
     {
-        $Body = @{device_iden=$DeviceId;type='note';title=$Title;body=$MessageBody;}
+        $Body = @{type='note';title=$Title;body=$MessageBody;}
+        if ($DeviceId) {
+            $Body.Add("device_iden",$DeviceId);
+        }
     	$Response = Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body -Credential $AccessCredential;
     }
     End
@@ -300,7 +303,7 @@ function Send-Link
         [Parameter(Mandatory=$true,
                    Position=0)]
         $APIKey,
-        [Parameter(Mandatory=$true,
+        [Parameter(Mandatory=$false,
                    Position=1)]
         [string]
         $DeviceId,
@@ -420,6 +423,58 @@ function Send-Address
     }
 }
 
+function Send-List
+{
+    [CmdletBinding()]
+    [OutputType([int])]
+    Param
+    (
+        # Param1 help description
+        [Parameter(Mandatory=$true,
+                   Position=0)]
+        $APIKey,
+        [Parameter(Mandatory=$false,
+                   Position=1)]
+        [string]
+        $DeviceId,
+
+        # Param2 help description
+        [Parameter(Mandatory=$true,
+                   Position=2)]
+        [string]
+        $ListTitle,
+        [Parameter(Mandatory=$true,
+                   Position=3)]
+        [Object]
+        $ListContents
+    )
+
+    Begin
+    {
+        $PushURL = "https://api.pushbullet.com/v2/pushes";
+        $PushMethod = "POST";
+        $AccessCredential = New-Object System.Management.Automation.PSCredential ($APIKey, (ConvertTo-SecureString $APIKey -AsPlainText -Force));
+    }
+    Process
+    {
+        try {
+            $ListContents | ConvertFrom-Json;
+        } catch [System.ArgumentException] {
+            $ListContents = $ListContents | ConvertTo-Json -Depth ([Int32]::MaxValue) -Compress;
+        }
+        $Body = @{type='list';title=$ListTitle;items=$ListContents;}
+        if ($DeviceId) {
+            $Body.Add("device_iden",$DeviceId);
+        }
+    	$Response = Invoke-RestMethod -Uri $PushURL -Method $PushMethod -Body $Body -Credential $AccessCredential;
+        $Response;
+    }
+    End
+    {
+    }
+}
+
+
 function Get-UnixTime {
     [CmdletBinding()]
     [OutputType([long])]
@@ -431,4 +486,4 @@ param (
     [long][decimal]::Round(($DateToConvert.ToUniversalTime() - $UnixEpoch).TotalSeconds);
 }
 
-Export-ModuleMember -Function @('Get-PushHistory','Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address','Remove-Push');
+Export-ModuleMember -Function @('Get-PushHistory','Get-Device','Get-Contact','Remove-Contact','Remove-Device','Get-User','Send-Text','Send-Link','Send-Address','Remove-Push','Send-List');
