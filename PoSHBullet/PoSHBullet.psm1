@@ -119,6 +119,16 @@ function Remove-Device
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Get-Contact
 {
     [CmdletBinding()]
@@ -154,6 +164,16 @@ function Get-Contact
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Remove-Contact
 {
     [CmdletBinding(SupportsShouldProcess)]
@@ -189,6 +209,16 @@ function Remove-Contact
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Get-UploadRequest
 {
     [CmdletBinding()]
@@ -217,6 +247,16 @@ function Get-UploadRequest
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Get-PushHistory
 {
     [CmdletBinding()]
@@ -248,6 +288,16 @@ function Get-PushHistory
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Send-Text
 {
     [CmdletBinding()]
@@ -293,6 +343,16 @@ function Send-Text
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Send-Link
 {
     [CmdletBinding()]
@@ -347,6 +407,16 @@ function Send-Link
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Remove-Push
 {
     [CmdletBinding()]
@@ -380,6 +450,16 @@ function Remove-Push
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Send-Address
 {
     [CmdletBinding()]
@@ -423,6 +503,16 @@ function Send-Address
     }
 }
 
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Send-List
 {
     [CmdletBinding()]
@@ -474,7 +564,16 @@ function Send-List
     }
 }
 
-
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
 function Get-UnixTime {
     [CmdletBinding()]
     [OutputType([long])]
